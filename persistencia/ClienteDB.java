@@ -17,7 +17,7 @@ public class ClienteDB implements GenericDB<Cliente, Integer> {
 	
 	public void inserir(Cliente cliente){
 		//comando insert com atb de cliente
-		String s = "insert into cliente values( " + cliente.getId() +", '" + cliente.getNome() + "', '" + cliente.getCpf() + "')";
+		String s = "insert into cliente (nome_cliente, cpf) values( '" + cliente.getNome() + "', '" + cliente.getCpf() + "')";
         System.out.println(s);
 		try {
 			con = Conexao.criarConexao();
@@ -33,7 +33,8 @@ public class ClienteDB implements GenericDB<Cliente, Integer> {
 	
 	public void excluir(Cliente cliente) {
 		// cria um comando DELETE usando o id do cliente
-		String s = "delete from cliente where id = " + cliente.getId();
+		String s = "delete from cliente where id_cliente = " + cliente.getId();
+		System.out.println(s);
 		try {
 			con = Conexao.criarConexao();
 			stm = con.createStatement();
@@ -72,8 +73,8 @@ public class ClienteDB implements GenericDB<Cliente, Integer> {
 			rs = stm.executeQuery(s);
 			// percorre o ResultSet lendo os dados de Cliente
 			while (rs.next()){
-				int id = rs.getInt("id");
-				String nome = rs.getString("nome");
+				int id = rs.getInt("id_cliente");
+				String nome = rs.getString("nome_cliente");
 				String cpf = rs.getString("cpf");
 				// cria um Cliente com os dados de um registro
 				Cliente cliente = new Cliente(id, nome, cpf);
@@ -82,7 +83,7 @@ public class ClienteDB implements GenericDB<Cliente, Integer> {
 			}		
 		} 
 		catch (SQLException e) {
-			System.out.println("Erro ao consultar tabela");
+			System.out.println("Erro ao consultar tabela :p");
 		} finally {
 			this.fecha(rs, stm, con);
 		}

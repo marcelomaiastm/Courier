@@ -22,7 +22,13 @@ public class Cliente implements Comparable<Cliente>{
 		this.cpf = cpf;
 	}
 	
-	
+		
+	public Cliente(String nome, String cpf) {
+		this.nome = nome;
+		this.cpf = cpf;
+	}
+
+
 	//getters e setters
 
 	public int getId() {
