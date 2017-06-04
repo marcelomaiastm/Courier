@@ -60,6 +60,16 @@ public class CadastroClienteUI extends JFrame {
 		
 		JPanel panel = new JPanel();
 		
+		JLabel lblNomeCompleto = new JLabel("Nome completo");
+		
+		textNome = new JTextField();
+		textNome.setColumns(10);
+		
+		JLabel lblCpfapenasNmeros = new JLabel("CPF (apenas n\u00FAmeros)");
+		
+		textCpf = new JTextField();
+		textCpf.setColumns(10);
+		
 		String titulo;
 		if (this.tipo == 0){
 			titulo = "Cadastrar Cliente";
@@ -69,7 +79,7 @@ public class CadastroClienteUI extends JFrame {
 			textCpf.setText(this.cliente.getCpf());
 		}
 		
-		panel.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panel.setBorder(new TitledBorder(null, titulo, TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		GroupLayout gl_contentPane = new GroupLayout(contentPane);
 		gl_contentPane.setHorizontalGroup(
 			gl_contentPane.createParallelGroup(Alignment.LEADING)
@@ -86,15 +96,7 @@ public class CadastroClienteUI extends JFrame {
 					.addContainerGap())
 		);
 		
-		JLabel lblNomeCompleto = new JLabel("Nome completo");
 		
-		textNome = new JTextField();
-		textNome.setColumns(10);
-		
-		JLabel lblCpfapenasNmeros = new JLabel("CPF (apenas n\u00FAmeros)");
-		
-		textCpf = new JTextField();
-		textCpf.setColumns(10);
 		
 		JButton btnCancelar = new JButton("Cancelar");
 		btnCancelar.addActionListener(new ActionListener() {

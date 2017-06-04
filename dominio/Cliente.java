@@ -63,7 +63,7 @@ public class Cliente implements Comparable<Cliente>{
 
 	@Override
 	public String toString() {
-		return "Cliente [id=" + id + ", nome=" + nome + ", cpf=" + cpf + "]";
+		return this.nome;
 	}
 
 

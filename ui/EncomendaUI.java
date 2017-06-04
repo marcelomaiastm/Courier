@@ -2,35 +2,38 @@ package br.com.courier.ui;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
-import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
+import javax.swing.JButton;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JTable;
 
-import br.com.courier.dominio.Cliente;
-import br.com.courier.persistencia.ClienteDB;
+import br.com.courier.dominio.Encomenda;
+import br.com.courier.persistencia.EncomendaDB;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-public class ClienteUI extends JFrame {
+public class EncomendaUI extends JFrame {
 
 	private JPanel contentPane;
-	private JTable tbCliente;
+	private JTable tbEncomenda;
 	private DefaultTableModel modelo = new DefaultTableModel();
-	private List<Cliente> lista;
+	private List<Encomenda> lista;
 	
 	
 	/**
@@ -40,7 +43,7 @@ public class ClienteUI extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					ClienteUI frame = new ClienteUI();
+					EncomendaUI frame = new EncomendaUI();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -52,68 +55,77 @@ public class ClienteUI extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public ClienteUI() {
+	public EncomendaUI() {
+		setTitle("Encomenda");
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowOpened(WindowEvent arg0) {
 				atualizaTabela();
 			}
 		});
-		setTitle("Cliente");
 		setBounds(100, 100, 711, 527);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		
-		JButton btnNovo = new JButton("Novo");
-		btnNovo.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				CadastroClienteUI cadastroCliente = new CadastroClienteUI(0, null);
-				cadastroCliente.setVisible(true);
-			}
-		});
+		JScrollPane scrollPane = new JScrollPane();
+		
+		JButton btnRemover = new JButton("Remover");
 		
 		JButton btnAlterar = new JButton("Alterar");
 		btnAlterar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (tbCliente.getSelectedRow() != -1){
-					CadastroClienteUI cadastroCliente = new CadastroClienteUI(1, lista.get(tbCliente.getSelectedRow()));
-					cadastroCliente.setVisible(true);
-				}else{
-					JOptionPane.showMessageDialog(null, "Selecione um registro da tabela :p");
+				if (tbEncomenda.getSelectedRow() != -1) {
+					if (JOptionPane.showConfirmDialog(null, "Confirma a exclusão do registro?", "Exclusão",
+							JOptionPane.YES_NO_OPTION) == 0) {
+					EncomendaDB encomendaDB = new EncomendaDB();
+					encomendaDB.excluir(lista.get(tbEncomenda.getSelectedRow()));
+					}
+				} else {
+					JOptionPane.showMessageDialog(null, "Selecione um registro na tabela");
 				}
 			}
 		});
 		
-		
-		JButton btnRemover = new JButton("Remover");
-		btnRemover.addActionListener(new ActionListener() {
+		JButton btnNovo = new JButton("Novo");
+		btnNovo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (tbCliente.getSelectedRow() != -1){
-					ClienteDB clienteDB = new ClienteDB();
-					clienteDB.excluir(lista.get(tbCliente.getSelectedRow()));
-				}else{
-					JOptionPane.showMessageDialog(null, "Selecione um registro da tabela :p");
-				}
+				CadastroEncomendaUI cadastroEncomenda = new CadastroEncomendaUI();
+				cadastroEncomenda.setVisible(true);
 			}
 		});
-		
 		
 		JButton btnAtualizar = new JButton("Atualizar");
 		btnAtualizar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
+			public void actionPerformed(ActionEvent e) {
 				atualizaTabela();
 			}
 		});
-				
-		JScrollPane scrollPane = new JScrollPane();
+		
+		JButton btnEntregar = new JButton("Entregar");
+		btnEntregar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (tbEncomenda.getSelectedRow() != -1) {
+					if (JOptionPane.showConfirmDialog(null, "Confirma a devolução do livro?", "Devolução",
+							JOptionPane.YES_NO_OPTION) == 0) {
+						EncomendaDB encomendaDB = new EncomendaDB();
+						Encomenda encomenda = lista.get(tbEncomenda.getSelectedRow());
+						encomenda.setDataSaida(Calendar.getInstance().getTime());
+						encomendaDB.modificar(encomenda);
+					}
+				} else {
+					JOptionPane.showMessageDialog(null, "Selecione um registro na tabela");
+				}
+			}
+		});
+		
 		GroupLayout gl_contentPane = new GroupLayout(contentPane);
 		gl_contentPane.setHorizontalGroup(
 			gl_contentPane.createParallelGroup(Alignment.TRAILING)
 				.addGroup(gl_contentPane.createSequentialGroup()
 					.addContainerGap()
 					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
-						.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 801, Short.MAX_VALUE)
+						.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 649, Short.MAX_VALUE)
 						.addGroup(Alignment.TRAILING, gl_contentPane.createSequentialGroup()
 							.addComponent(btnAtualizar)
 							.addGap(18)
@@ -121,7 +133,9 @@ public class ClienteUI extends JFrame {
 							.addGap(18)
 							.addComponent(btnAlterar)
 							.addGap(18)
-							.addComponent(btnRemover)))
+							.addComponent(btnRemover)
+							.addGap(18)
+							.addComponent(btnEntregar)))
 					.addContainerGap())
 		);
 		gl_contentPane.setVerticalGroup(
@@ -129,40 +143,37 @@ public class ClienteUI extends JFrame {
 				.addGroup(gl_contentPane.createSequentialGroup()
 					.addContainerGap()
 					.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 382, Short.MAX_VALUE)
-					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addGap(18)
 					.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
+						.addComponent(btnEntregar)
 						.addComponent(btnRemover)
 						.addComponent(btnAlterar)
 						.addComponent(btnNovo)
 						.addComponent(btnAtualizar))
-					.addGap(18))
+					.addContainerGap())
 		);
 		
-		String[] nomesColuna = {"Nome", "CPF"};
+		
+		String[] nomesColuna = {"Destinatário", "Descrição do pacote"};
 		modelo.setColumnIdentifiers(nomesColuna);
 		
-		tbCliente = new JTable(modelo);
-		scrollPane.setViewportView(tbCliente);
+		tbEncomenda = new JTable(modelo);
+		scrollPane.setViewportView(tbEncomenda);
 		contentPane.setLayout(gl_contentPane);
-		
-				
 	}
 	
 	private void atualizaTabela(){
-		ClienteDB clienteDB = new ClienteDB();
-		lista = clienteDB.buscarTodos();
-		Iterator<Cliente> it = lista.iterator();
-		Cliente a;
+		EncomendaDB encomendaDB = new EncomendaDB();
+		lista = encomendaDB.buscarNaoEntregues();
+		Iterator<Encomenda> it = lista.iterator();
+		Encomenda e;
 		while (modelo.getRowCount() > 0) {
 			modelo.removeRow(0);
 		}
 		while (it.hasNext()) {
-			a = it.next();
-			modelo.addRow(new Object[] {a.getNome(), a.getCpf()});
+			e = it.next();
+			modelo.addRow(new Object[] {e.getClienteD(), e.getDescr()});
 		}
 	}
-	
-	
-	
 	
 }

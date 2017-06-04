@@ -7,6 +7,7 @@ import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import br.com.courier.dominio.Encomenda;
@@ -24,16 +25,14 @@ public class EncomendaDB implements GenericDB<Encomenda, Integer> {
 	
 	public void inserir(Encomenda encomenda){
 		//cria comando insert na tabela encomenda
-		String s = "insert into encomenda (id_enco, cliente_rem, cliente_dest, data_entrada, "
-				+ " desc_enco, vlr_frete, pgto_status, enco_status) values("
-				+ encomenda.getId()
-				+ ", '" + encomenda.getClienteR()
-				+ ", '" + encomenda.getClienteD()
+		String s = "insert into encomenda (cliente_rem, cliente_dest, data_entrada, "
+				+ " desc_enco, vlr_frete, pgto_status) values("
+				+ "'" + encomenda.getClienteR()
+				+ "', '" + encomenda.getClienteD()
 				+ "', '" + new String(dateFormat.format(encomenda.getDataEntrada().getTime()))
-				+ ", ," + encomenda.getDescr()
-				+ ", '" + encomenda.getFrete()
-				+ ", '" + encomenda.isStatPgto()
-				+ ", '" + encomenda.getEncoStatus()
+				+ "', '" + encomenda.getDescr()
+				+ "', '" + encomenda.getFrete()
+				+ "', '" + encomenda.isStatPgto()
 				+ "')";
 		try {
 			con = Conexao.criarConexao();
@@ -43,6 +42,7 @@ public class EncomendaDB implements GenericDB<Encomenda, Integer> {
 		}
 		catch (SQLException e) {
 			System.out.println("Erro ao inserir na tabela encomenda");
+			System.out.println(s);
 		}
 		finally {
 			this.fecha(rs, stm, con);
@@ -74,8 +74,7 @@ public class EncomendaDB implements GenericDB<Encomenda, Integer> {
 				+ "', data_entrada = '" + new String(dateFormat.format(encomenda.getDataEntrada().getTime()
 				+ "', desc_enco = '" + encomenda.getDescr()
 				+ "', vlr_frete = '" + encomenda.getFrete()
-				+ "', pgto_status = '" + encomenda.isStatPgto()
-				+ "', enco_status = '" + encomenda.getEncoStatus()));
+				+ "', pgto_status = '" + encomenda.isStatPgto()));
 			if (encomenda.getDataSaida() == null) {
 				s += "' where id = " + encomenda.getId();
 			}
@@ -112,29 +111,70 @@ public class EncomendaDB implements GenericDB<Encomenda, Integer> {
 				int id = rs.getInt("id_enco");
 				int idCliente = rs.getInt("id_cliente");
 				Cliente clienteR = new ClienteDB().buscarPorID(idCliente);
-				//Cliente clienteD = rs.getString("cliente_dest");
+				Cliente clienteD = new ClienteDB().buscarPorID(idCliente);
 				Date dataEntrada = rs.getDate("data_entrada");
 				Date dataSaida = rs.getDate("data_saida");
 				String descEnco = rs.getString("desc_enco");
-				float frete = rs.getFloat("vlr_frete");
+				String frete = rs.getString("vlr_frete");
 				boolean statPgto = rs.getBoolean("pgto_status");
-				String encoStatus = rs.getString("enco_status");
 				
 				
 				// cria um encomenda com os dados de um registro
-				Encomenda encomenda = new Encomenda(id, clienteR, dataEntrada, dataSaida, descEnco, frete, statPgto, encoStatus);
+				Encomenda encomenda = new Encomenda(clienteR, clienteD, dataEntrada, dataSaida, descEnco, frete, statPgto);
 				// adiciona o encomenda no ArrayList
 				lista.add(encomenda);
 			}
+			
 		}
 		catch (SQLException e) {
 			System.out.println("Erro ao consultar tabela");
+			System.out.println(s);
 		}
 		finally {
 			this.fecha(rs, stm, con);
 		}
 		return lista;
 	}
+	
+	//códido do método buscarNãoEntregues
+	public List<Encomenda> buscarNaoEntregues() {
+		// declara um ArrayList para receber os dados da tabela
+		List<Encomenda> lista = new ArrayList<Encomenda>();
+		String s = "select * from encomenda where data_saida is null";
+		try {
+			con = Conexao.criarConexao();
+			stm = con.createStatement();
+			// executa a consulta de todos os registros
+			rs = stm.executeQuery(s);
+			// percorre o ResultSet lendo os dados de encomenda
+			while (rs.next()) {
+				int id = rs.getInt("id_enco");
+				int idCliente = rs.getInt("id_cliente");
+				Cliente clienteR = new ClienteDB().buscarPorID(idCliente);
+				Cliente clienteD = new ClienteDB().buscarPorID(idCliente);
+				Date dataEntrada = rs.getDate("data_entrada");
+				Date dataSaida = rs.getDate("data_saida");
+				String descEnco = rs.getString("desc_enco");
+				String frete = rs.getString("vlr_frete");
+				boolean statPgto = rs.getBoolean("pgto_status");
+				
+				
+				// cria um encomenda com os dados de um registro
+				Encomenda encomenda = new Encomenda(clienteR, clienteD, dataEntrada, dataSaida, descEnco, frete, statPgto);
+				// adiciona o encomenda no ArrayList
+				lista.add(encomenda);
+			}
+		}
+		catch (SQLException e) {
+			System.out.println("Erro ao consultar tabela");
+			System.out.println(s);
+		}
+		finally {
+			this.fecha(rs, stm, con);
+		}
+		return lista;
+	}
+	
 	
 	// código do método fecha()
 	public void fecha(ResultSet rs, Statement stm, Connection con) {
@@ -179,7 +219,7 @@ public class EncomendaDB implements GenericDB<Encomenda, Integer> {
 				Date dataEntrada = rs.getDate("data_entrada");
 				Date dataSaida = rs.getDate("data_saida");
 				String descEnco = rs.getString("desc_enco");
-				float frete = rs.getFloat("vlr_frete");
+				String frete = rs.getString("vlr_frete");
 				boolean statPgto = rs.getBoolean("pgto_status");
 				String encoStatus = rs.getString("enco_status");
 				
@@ -191,6 +231,7 @@ public class EncomendaDB implements GenericDB<Encomenda, Integer> {
 		}
 		catch (SQLException e) {
 			System.out.println("Erro ao consultar na tabela");
+			System.out.println(s);
 		}
 		finally {
 			this.fecha(rs, stm, con);

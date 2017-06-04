@@ -9,9 +9,9 @@ public class Encomenda {
 	private Date dataEntrada;
 	private Date dataSaida;
 	private String descr;
-	private float frete;
+	private String frete;
 	private boolean statPgto;
-	private String encoStatus;
+	
 	
 	
 	//construtores
@@ -20,8 +20,7 @@ public class Encomenda {
 
 
 	public Encomenda(Cliente clienteR, Cliente clienteD, Date dataEntrada,
-			Date dataSaida, String descr, float frete, boolean statPgto,
-			String encoStatus) {
+			Date dataSaida, String descr, String frete, boolean statPgto) {
 		this.clienteR = clienteR;
 		this.clienteD = clienteD;
 		this.dataEntrada = dataEntrada;
@@ -29,12 +28,12 @@ public class Encomenda {
 		this.descr = descr;
 		this.frete = frete;
 		this.statPgto = statPgto;
-		this.encoStatus = encoStatus;
+		
 	}
 
 
 	public Encomenda(int id, Cliente clienteR, Cliente clienteD,
-			Date dataEntrada, Date dataSaida, String descr, float frete,
+			Date dataEntrada, Date dataSaida, String descr, String frete,
 			boolean statPgto, String encoStatus) {
 		this.id = id;
 		this.clienteR = clienteR;
@@ -44,7 +43,7 @@ public class Encomenda {
 		this.descr = descr;
 		this.frete = frete;
 		this.statPgto = statPgto;
-		this.encoStatus = encoStatus;
+		
 	}
 	
 	
@@ -109,12 +108,12 @@ public class Encomenda {
 	}
 
 
-	public float getFrete() {
+	public String getFrete() {
 		return frete;
 	}
 
 
-	public void setFrete(float frete) {
+	public void setFrete(String frete) {
 		this.frete = frete;
 	}
 
@@ -129,27 +128,19 @@ public class Encomenda {
 	}
 
 
-	public String getEncoStatus() {
-		return encoStatus;
-	}
-
-
-	public void setEncoStatus(String encoStatus) {
-		this.encoStatus = encoStatus;
-	}
-
+	
 
 	@Override
 	public String toString() {
 		return "Encomenda [id=" + id + ", clienteR=" + clienteR + ", clienteD="
 				+ clienteD + ", dataEntrada=" + dataEntrada + ", dataSaida="
 				+ dataSaida + ", descr=" + descr + ", frete=" + frete
-				+ ", statPgto=" + statPgto + ", encoStatus=" + encoStatus + "]";
+				+ ", statPgto=" + statPgto +  "]";
 	}
 
 
 	public Encomenda(int id, Cliente clienteR, Date dataEntrada,
-			Date dataSaida, String descr, float frete, boolean statPgto,
+			Date dataSaida, String descr, String frete, boolean statPgto,
 			String encoStatus) {
 		this.id = id;
 		this.clienteR = clienteR;
@@ -158,13 +149,6 @@ public class Encomenda {
 		this.descr = descr;
 		this.frete = frete;
 		this.statPgto = statPgto;
-		this.encoStatus = encoStatus;
 	}
-
-	
-	
-	
-	
-	
 
 }

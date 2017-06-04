@@ -66,6 +66,12 @@ public class PrincipalUI extends JFrame {
 		mnCadastros.add(mntmClientes);
 		
 		JMenuItem mntmEncomendas = new JMenuItem("Encomendas");
+		mntmEncomendas.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				EncomendaUI encomendaUI = new EncomendaUI();
+				encomendaUI.setVisible(true);
+			}
+		});
 		mnCadastros.add(mntmEncomendas);
 		
 		JMenu mnEncomendas = new JMenu("Encomendas");

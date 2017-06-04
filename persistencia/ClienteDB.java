@@ -49,7 +49,8 @@ public class ClienteDB implements GenericDB<Cliente, Integer> {
 	
 	public void modificar(Cliente cliente) {
 		// cria um comando UPDATE usando os atributos de cliente
-		String s = "update cliente set nome = '" + cliente.getNome() + "' where id = " + cliente.getId();
+		String s = "update cliente set nome_cliente = '" + cliente.getNome() + "' where id_cliente = " + cliente.getId();
+		System.out.println(s);
 		try {
 			con = Conexao.criarConexao();
 			stm = con.createStatement();
