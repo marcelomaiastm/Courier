@@ -66,7 +66,9 @@ public class CadastroEncomendaUI extends JFrame {
 		DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 	
 	
-	public CadastroEncomendaUI() {
+	public CadastroEncomendaUI(int tipo, Encomenda encomenda) {
+		this.tipo = tipo;
+		this.encomenda = encomenda;
 		setTitle("Encomenda");
 		
 		//inicializando os atributos
@@ -136,14 +138,15 @@ public class CadastroEncomendaUI extends JFrame {
 								textFrete.getText(), chkbxPago.isSelected()));
 					}else{
 						//alterar uma encomenda
-						CadastroEncomendaUI.this.encomenda.setClienteD((Cliente) (cbxRem.getSelectedItem()));
+						CadastroEncomendaUI.this.encomenda.setClienteR((Cliente) (cbxRem.getSelectedItem()));
 						CadastroEncomendaUI.this.encomenda.setClienteD((Cliente) (cbxDest.getSelectedItem()));
 						CadastroEncomendaUI.this.encomenda.setDataEntrada(data);
 						CadastroEncomendaUI.this.encomenda.setFrete(textFrete.getText());
 						CadastroEncomendaUI.this.encomenda.setStatPgto(chkbxPago.isSelected());
 						CadastroEncomendaUI.this.encomenda.setDescr(textDesc.getText());
-						
-					}
+						encomendaDB.modificar(CadastroEncomendaUI.this.encomenda);
+					}setVisible(false);
+					
 				}catch (ParseException pe){
 					pe.getMessage();
 					pe.printStackTrace();

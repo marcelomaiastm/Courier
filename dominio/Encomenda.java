@@ -3,7 +3,7 @@ package br.com.courier.dominio;
 import java.util.Date;
 
 public class Encomenda {
-	private int id;
+	private int idEnco;
 	private Cliente clienteR;
 	private Cliente clienteD;
 	private Date dataEntrada;
@@ -11,6 +11,8 @@ public class Encomenda {
 	private String descr;
 	private String frete;
 	private boolean statPgto;
+	private int idClienteR;
+	private int idClienteD;
 	
 	
 	
@@ -30,12 +32,23 @@ public class Encomenda {
 		this.statPgto = statPgto;
 		
 	}
-
-
-	public Encomenda(int id, Cliente clienteR, Cliente clienteD,
+	
+	public Encomenda(Date dataEntrada, Date dataSaida, String descr,
+			String frete, boolean statPgto, int idClienteR, int idClienteD) {
+		this.dataEntrada = dataEntrada;
+		this.dataSaida = dataSaida;
+		this.descr = descr;
+		this.frete = frete;
+		this.statPgto = statPgto;
+		this.idClienteR = idClienteR;
+		this.idClienteD = idClienteD;
+	}
+	
+	
+	public Encomenda(int idEnco, Cliente clienteR, Cliente clienteD,
 			Date dataEntrada, Date dataSaida, String descr, String frete,
-			boolean statPgto, String encoStatus) {
-		this.id = id;
+			boolean statPgto, int idClienteR, int idClienteD) {
+		this.idEnco = idEnco;
 		this.clienteR = clienteR;
 		this.clienteD = clienteD;
 		this.dataEntrada = dataEntrada;
@@ -43,18 +56,19 @@ public class Encomenda {
 		this.descr = descr;
 		this.frete = frete;
 		this.statPgto = statPgto;
-		
+		this.idClienteR = idClienteR;
+		this.idClienteD = idClienteD;
 	}
-	
-	
 
+
+	//getters e setters
 	public int getId() {
-		return id;
+		return idEnco;
 	}
 
 
 	public void setId(int id) {
-		this.id = id;
+		this.idEnco = id;
 	}
 
 
@@ -128,27 +142,35 @@ public class Encomenda {
 	}
 
 
-	
+	public int getIdClienteR() {
+		return idClienteR;
+	}
+
+
+	public void setIdClienteR(int idClienteR) {
+		this.idClienteR = idClienteR;
+	}
+
+
+	public int getIdClienteD() {
+		return idClienteD;
+	}
+
+
+	public void setIdClienteD(int idClienteD) {
+		this.idClienteD = idClienteD;
+	}
+
 
 	@Override
 	public String toString() {
-		return "Encomenda [id=" + id + ", clienteR=" + clienteR + ", clienteD="
+		return "Encomenda [id=" + idEnco + ", clienteR=" + clienteR + ", clienteD="
 				+ clienteD + ", dataEntrada=" + dataEntrada + ", dataSaida="
 				+ dataSaida + ", descr=" + descr + ", frete=" + frete
-				+ ", statPgto=" + statPgto +  "]";
+				+ ", statPgto=" + statPgto + ", idClienteR=" + idClienteR
+				+ ", idClienteD=" + idClienteD + "]";
 	}
 
 
-	public Encomenda(int id, Cliente clienteR, Date dataEntrada,
-			Date dataSaida, String descr, String frete, boolean statPgto,
-			String encoStatus) {
-		this.id = id;
-		this.clienteR = clienteR;
-		this.dataEntrada = dataEntrada;
-		this.dataSaida = dataSaida;
-		this.descr = descr;
-		this.frete = frete;
-		this.statPgto = statPgto;
-	}
-
+		
 }

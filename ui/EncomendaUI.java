@@ -5,6 +5,7 @@ import java.awt.EventQueue;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 
@@ -71,15 +72,13 @@ public class EncomendaUI extends JFrame {
 		JScrollPane scrollPane = new JScrollPane();
 		
 		JButton btnRemover = new JButton("Remover");
-		
-		JButton btnAlterar = new JButton("Alterar");
-		btnAlterar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+		btnRemover.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
 				if (tbEncomenda.getSelectedRow() != -1) {
 					if (JOptionPane.showConfirmDialog(null, "Confirma a exclusão do registro?", "Exclusão",
 							JOptionPane.YES_NO_OPTION) == 0) {
-					EncomendaDB encomendaDB = new EncomendaDB();
-					encomendaDB.excluir(lista.get(tbEncomenda.getSelectedRow()));
+						EncomendaDB encomendaDB = new EncomendaDB();
+						encomendaDB.excluir(lista.get(tbEncomenda.getSelectedRow()));
 					}
 				} else {
 					JOptionPane.showMessageDialog(null, "Selecione um registro na tabela");
@@ -87,10 +86,23 @@ public class EncomendaUI extends JFrame {
 			}
 		});
 		
+		JButton btnAlterar = new JButton("Alterar");
+		btnAlterar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (tbEncomenda.getSelectedRow() != -1) {
+					CadastroEncomendaUI cadastroEncomenda = new CadastroEncomendaUI(1,
+							lista.get(tbEncomenda.getSelectedRow()));
+					cadastroEncomenda.setVisible(true);
+					} else {
+						JOptionPane.showMessageDialog(null, "Selecione um registro na tabela");
+				}
+			}
+		});
+		
 		JButton btnNovo = new JButton("Novo");
 		btnNovo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				CadastroEncomendaUI cadastroEncomenda = new CadastroEncomendaUI();
+				CadastroEncomendaUI cadastroEncomenda = new CadastroEncomendaUI(0, null);
 				cadastroEncomenda.setVisible(true);
 			}
 		});
@@ -106,7 +118,7 @@ public class EncomendaUI extends JFrame {
 		btnEntregar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (tbEncomenda.getSelectedRow() != -1) {
-					if (JOptionPane.showConfirmDialog(null, "Confirma a devolução do livro?", "Devolução",
+					if (JOptionPane.showConfirmDialog(null, "Confirma a entrega da encomenda?", "Entrega de encomenda",
 							JOptionPane.YES_NO_OPTION) == 0) {
 						EncomendaDB encomendaDB = new EncomendaDB();
 						Encomenda encomenda = lista.get(tbEncomenda.getSelectedRow());
@@ -174,6 +186,7 @@ public class EncomendaUI extends JFrame {
 			e = it.next();
 			modelo.addRow(new Object[] {e.getClienteD(), e.getDescr()});
 		}
+		//System.out.println(lista);
 	}
 	
 }

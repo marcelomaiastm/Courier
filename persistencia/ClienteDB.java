@@ -84,7 +84,7 @@ public class ClienteDB implements GenericDB<Cliente, Integer> {
 			}		
 		} 
 		catch (SQLException e) {
-			System.out.println("Erro ao consultar tabela :p");
+			System.out.println("Erro ao consultar tabela");
 		} finally {
 			this.fecha(rs, stm, con);
 		}
@@ -117,7 +117,7 @@ public class ClienteDB implements GenericDB<Cliente, Integer> {
 	
 	public Cliente buscarPorID(Integer id) {
 		// cria um SELECT para retornar um Cliente pelo id
-		String s = "select * from cliente where id = " + id;
+		String s = "select * from cliente where id_cliente = " + id;
 		String nome;
 		String cpf;
 		Cliente cliente = null;
@@ -128,13 +128,14 @@ public class ClienteDB implements GenericDB<Cliente, Integer> {
 			rs = stm.executeQuery(s);
 			// cria um objeto Cliente com os dados retornados
 			if (rs.next()) {
-				id = rs.getInt("ID");
-				nome = rs.getString("NOME");
-				cpf = rs.getString("CPF");
+				id = rs.getInt("id_cliente");
+				nome = rs.getString("nome_cliente");
+				cpf = rs.getString("cpf");
 				cliente = new Cliente(id, nome, cpf);
 			}
 		} catch (SQLException e) {
-			System.out.println("Erro ao consultar na tabela");
+			System.out.println("Erro ao consultar tabela");
+			System.out.println(e.getMessage());
 		} finally {
 			this.fecha(rs, stm, con);
 		}

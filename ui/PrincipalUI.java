@@ -9,6 +9,8 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+
 import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -50,6 +52,11 @@ public class PrincipalUI extends JFrame {
 		menuBar.add(mnArquivo);
 		
 		JMenuItem mntmSair = new JMenuItem("Sair");
+		mntmSair.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				System.exit(0);
+			}
+		});
 		mnArquivo.add(mntmSair);
 		
 		JMenu mnCadastros = new JMenu("Cadastros");
@@ -77,28 +84,33 @@ public class PrincipalUI extends JFrame {
 		JMenu mnEncomendas = new JMenu("Encomendas");
 		menuBar.add(mnEncomendas);
 		
-		JMenuItem mntmPorData = new JMenuItem("Por Data");
-		mnEncomendas.add(mntmPorData);
-		
 		JMenuItem mntmPorCliente = new JMenuItem("Por Cliente");
+		mntmPorCliente.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				ConsultaEncomendaUI consultaUI = new ConsultaEncomendaUI();
+				consultaUI.setVisible(true);
+				
+			}
+		});
 		mnEncomendas.add(mntmPorCliente);
-		
-		JMenuItem mntmPorSituao = new JMenuItem("Por Situa\u00E7\u00E3o");
-		mnEncomendas.add(mntmPorSituao);
-		
-		JMenuItem mntmFinanceiro = new JMenuItem("Financeiro");
-		mnEncomendas.add(mntmFinanceiro);
 		
 		JMenu mnAjuda = new JMenu("Ajuda");
 		menuBar.add(mnAjuda);
 		
-		JMenuItem mntmBackup = new JMenuItem("Backup");
-		mnAjuda.add(mntmBackup);
+		//JMenuItem mntmBackup = new JMenuItem("Backup");
+		//mnAjuda.add(mntmBackup);
 		
-		JMenuItem mntmRestaurar = new JMenuItem("Restaurar");
-		mnAjuda.add(mntmRestaurar);
+		//JMenuItem mntmRestaurar = new JMenuItem("Restaurar");
+		//mnAjuda.add(mntmRestaurar);
 		
 		JMenuItem mntmSobre = new JMenuItem("Sobre");
+		mntmSobre.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JOptionPane.showMessageDialog(null, "<html><body><p width='400px' align='center'>Courier é um "
+						+ "software gestor de encomendas, de cunho acadêmico, desenvolvido durante a disciplina "
+						+ "Desenvolvimento de Sistemas de Informação 2017/1 do CEULS/ULBRA.</p></body></html>");
+			}
+		});
 		mnAjuda.add(mntmSobre);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));

@@ -25,20 +25,25 @@ public class EncomendaDB implements GenericDB<Encomenda, Integer> {
 	
 	public void inserir(Encomenda encomenda){
 		//cria comando insert na tabela encomenda
-		String s = "insert into encomenda (cliente_rem, cliente_dest, data_entrada, "
+		String s = "insert into encomenda (id_cliente_r, id_cliente_d, data_entrada, "
 				+ " desc_enco, vlr_frete, pgto_status) values("
-				+ "'" + encomenda.getClienteR()
-				+ "', '" + encomenda.getClienteD()
+				+ "'" + encomenda.getClienteR().getId()
+				+ "', '" + encomenda.getClienteD().getId()
 				+ "', '" + new String(dateFormat.format(encomenda.getDataEntrada().getTime()))
 				+ "', '" + encomenda.getDescr()
-				+ "', '" + encomenda.getFrete()
-				+ "', '" + encomenda.isStatPgto()
-				+ "')";
+				+ "', '" + encomenda.getFrete();
+			if(encomenda.isStatPgto() == true){
+				s += "', '1'";					
+			}else{
+				s += "', '0'";
+			}
+				s += ")";
 		try {
 			con = Conexao.criarConexao();
 			stm = con.createStatement();
 			// executa o comando para inserir os dados na tabela
 			stm.executeUpdate(s);
+			
 		}
 		catch (SQLException e) {
 			System.out.println("Erro ao inserir na tabela encomenda");
@@ -52,15 +57,18 @@ public class EncomendaDB implements GenericDB<Encomenda, Integer> {
 	
 	public void excluir(Encomenda encomenda) {
 		// cria um comando DELETE usando o id de encomenda
-		String s = "delete from encomenda where id = " + encomenda.getId();
+		String s = "delete from encomenda where id_enco = " + encomenda.getId();
+		System.out.println(s);
 		try {
 			con = Conexao.criarConexao();
 			stm = con.createStatement();
+			
 			// executa o comando para excluir o autor da tabela
 			stm.executeUpdate(s);
 		}
 		catch (SQLException e) {
 			System.out.println("Erro ao tentar excluir na tabela");
+			System.out.println(e.getMessage());
 		}
 		finally {
 			this.fecha(rs, stm, con);
@@ -69,18 +77,22 @@ public class EncomendaDB implements GenericDB<Encomenda, Integer> {
 	
 	public void modificar(Encomenda encomenda) {
 		// cria um comando UPDATE usando os atributos de encomenda
-		String s = "update encomenda set cliente_rem = '" + encomenda.getClienteR()
-				+ "', cliente_dest = '" + encomenda.getClienteD()
-				+ "', data_entrada = '" + new String(dateFormat.format(encomenda.getDataEntrada().getTime()
+		String s = "update encomenda set id_cliente_r = '" + encomenda.getClienteR().getId()
+				+ "', id_cliente_d = '" + encomenda.getClienteD().getId()
+				+ "', data_entrada = '" + new String(dateFormat.format(encomenda.getDataEntrada())
 				+ "', desc_enco = '" + encomenda.getDescr()
-				+ "', vlr_frete = '" + encomenda.getFrete()
-				+ "', pgto_status = '" + encomenda.isStatPgto()));
+				+ "', vlr_frete = '" + encomenda.getFrete());
+				if(encomenda.isStatPgto() == true){
+					s += "', pgto_status = '1'";					
+				}else{
+					s += "', pgto_status = '0'";
+				}
 			if (encomenda.getDataSaida() == null) {
-				s += "' where id = " + encomenda.getId();
+				s += " where id_enco = " + encomenda.getId();
 			}
 			else {
 			s += "', data_saida = '" + new String(dateFormat.format(encomenda.getDataSaida().getTime()))
-				+ "' where id = " + encomenda.getId();
+				+ "' where id_enco = " + encomenda.getId();
 		}
 		System.out.println(s);
 		try {
@@ -108,15 +120,16 @@ public class EncomendaDB implements GenericDB<Encomenda, Integer> {
 			rs = stm.executeQuery(s);
 			// percorre o ResultSet lendo os dados de encomenda
 			while (rs.next()) {
-				int id = rs.getInt("id_enco");
-				int idCliente = rs.getInt("id_cliente");
-				Cliente clienteR = new ClienteDB().buscarPorID(idCliente);
-				Cliente clienteD = new ClienteDB().buscarPorID(idCliente);
+				int idEnco = rs.getInt("id_enco");
+				int idClienteR = rs.getInt("id_cliente_r");
+				int idClienteD = rs.getInt("id_cliente_d");
 				Date dataEntrada = rs.getDate("data_entrada");
 				Date dataSaida = rs.getDate("data_saida");
 				String descEnco = rs.getString("desc_enco");
 				String frete = rs.getString("vlr_frete");
 				boolean statPgto = rs.getBoolean("pgto_status");
+				Cliente clienteR = new ClienteDB().buscarPorID(idClienteR);
+				Cliente clienteD = new ClienteDB().buscarPorID(idClienteD);
 				
 				
 				// cria um encomenda com os dados de um registro
@@ -148,26 +161,29 @@ public class EncomendaDB implements GenericDB<Encomenda, Integer> {
 			rs = stm.executeQuery(s);
 			// percorre o ResultSet lendo os dados de encomenda
 			while (rs.next()) {
-				int id = rs.getInt("id_enco");
-				int idCliente = rs.getInt("id_cliente");
-				Cliente clienteR = new ClienteDB().buscarPorID(idCliente);
-				Cliente clienteD = new ClienteDB().buscarPorID(idCliente);
+				int idEnco = rs.getInt("id_enco");
+				int idClienteR = rs.getInt("id_cliente_r");
+				int idClienteD = rs.getInt("id_cliente_d");
 				Date dataEntrada = rs.getDate("data_entrada");
 				Date dataSaida = rs.getDate("data_saida");
 				String descEnco = rs.getString("desc_enco");
 				String frete = rs.getString("vlr_frete");
 				boolean statPgto = rs.getBoolean("pgto_status");
-				
-				
+				Cliente clienteR = new ClienteDB().buscarPorID(idClienteR);
+				Cliente clienteD = new ClienteDB().buscarPorID(idClienteD);
+								
 				// cria um encomenda com os dados de um registro
-				Encomenda encomenda = new Encomenda(clienteR, clienteD, dataEntrada, dataSaida, descEnco, frete, statPgto);
+				Encomenda encomenda = new Encomenda(idEnco, clienteR, clienteD, dataEntrada, 
+						dataSaida, descEnco, frete, statPgto, idClienteR, idClienteD);
+				
 				// adiciona o encomenda no ArrayList
 				lista.add(encomenda);
 			}
 		}
 		catch (SQLException e) {
 			System.out.println("Erro ao consultar tabela");
-			System.out.println(s);
+			//System.out.println(s);
+			System.out.println(e.getMessage());
 		}
 		finally {
 			this.fecha(rs, stm, con);
@@ -212,26 +228,26 @@ public class EncomendaDB implements GenericDB<Encomenda, Integer> {
 			rs = stm.executeQuery(s);
 			// cria um objeto Encomenda com os dados retornados
 			if (rs.next()) {
-				id = rs.getInt("id_enco");
-				int idCliente = rs.getInt("id_cliente");
-				Cliente clienteR = new ClienteDB().buscarPorID(idCliente);
-				//Cliente clienteD = rs.getString("cliente_dest");
+				int idEnco = rs.getInt("id_enco");
+				int idClienteR = rs.getInt("id_cliente_r");
+				int idClienteD = rs.getInt("id_cliente_d");
 				Date dataEntrada = rs.getDate("data_entrada");
 				Date dataSaida = rs.getDate("data_saida");
 				String descEnco = rs.getString("desc_enco");
 				String frete = rs.getString("vlr_frete");
 				boolean statPgto = rs.getBoolean("pgto_status");
-				String encoStatus = rs.getString("enco_status");
+				Cliente clienteR = new ClienteDB().buscarPorID(idClienteR);
+				Cliente clienteD = new ClienteDB().buscarPorID(idClienteD);
 				
 				
 				// cria um encomenda com os dados de um registro
-				encomenda = new Encomenda(id, clienteR, dataEntrada, dataSaida, descEnco, frete, statPgto, encoStatus);
+				encomenda = new Encomenda(clienteR, clienteD, dataEntrada, dataSaida, descEnco, frete, statPgto);
 
 			}
 		}
 		catch (SQLException e) {
-			System.out.println("Erro ao consultar na tabela");
-			System.out.println(s);
+			System.out.println("Erro ao consultar tabela");
+			System.out.println(e.getMessage());
 		}
 		finally {
 			this.fecha(rs, stm, con);
